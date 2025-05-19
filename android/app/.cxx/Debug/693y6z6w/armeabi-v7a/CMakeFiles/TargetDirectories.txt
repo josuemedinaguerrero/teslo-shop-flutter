@@ -1,0 +1,2 @@
+/home/josue/Desktop/FLUTTER/FLUTTER-MOVIL-DE-CERO-A-EXPERTO/TesloShop/teslo_app/android/app/.cxx/Debug/693y6z6w/armeabi-v7a/CMakeFiles/edit_cache.dir
+/home/josue/Desktop/FLUTTER/FLUTTER-MOVIL-DE-CERO-A-EXPERTO/TesloShop/teslo_app/android/app/.cxx/Debug/693y6z6w/armeabi-v7a/CMakeFiles/rebuild_cache.dir
