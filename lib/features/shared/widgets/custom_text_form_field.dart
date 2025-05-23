@@ -30,11 +30,12 @@ class CustomTextFormField extends StatelessWidget {
     const borderRadius = Radius.circular(15);
 
     return Container(
-      // padding: const EdgeInsets.only(bottom: 0, top: 15),
+      padding: EdgeInsets.symmetric(vertical: 15),
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.only(topLeft: borderRadius, bottomLeft: borderRadius, bottomRight: borderRadius),
-          boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 200), blurRadius: 10, offset: const Offset(0, 5))]),
+        color: Colors.white,
+        borderRadius: const BorderRadius.only(topLeft: borderRadius, bottomLeft: borderRadius, bottomRight: borderRadius),
+        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 200), blurRadius: 10, offset: const Offset(0, 5))],
+      ),
       child: TextFormField(
         onChanged: onChanged,
         validator: validator,
@@ -45,14 +46,13 @@ class CustomTextFormField extends StatelessWidget {
           floatingLabelStyle: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
           enabledBorder: border,
           focusedBorder: border,
-          errorBorder: border.copyWith(borderSide: BorderSide(color: Colors.red.shade800)),
-          focusedErrorBorder: border.copyWith(borderSide: BorderSide(color: Colors.red.shade800)),
+          errorBorder: border.copyWith(borderSide: BorderSide(color: Colors.transparent)),
+          focusedErrorBorder: border.copyWith(borderSide: BorderSide(color: Colors.transparent)),
           isDense: true,
           label: label != null ? Text(label!) : null,
           hintText: hint,
           errorText: errorMessage,
           focusColor: colors.primary,
-          // icon: Icon( Icons.supervised_user_circle_outlined, color: colors.primary, )
         ),
       ),
     );

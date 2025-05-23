@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+
+import 'package:teslo_shop/features/auth/presentation/providers/providers.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -42,11 +46,24 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-class _LoginForm extends StatelessWidget {
+class _LoginForm extends ConsumerWidget {
   const _LoginForm();
 
+  void showSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final loginForm = ref.watch(loginFormProvider);
+    ref.listen(
+      authProvider,
+      (previous, next) {
+        if (next.errorMessage.isEmpty) return;
+        showSnackbar(context, next.errorMessage);
+      },
+    );
     final textStyles = Theme.of(context).textTheme;
 
     return Padding(
@@ -55,13 +72,27 @@ class _LoginForm extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text('Login', style: textStyles.titleLarge),
-          const CustomTextFormField(label: 'Correo', keyboardType: TextInputType.emailAddress),
-          const CustomTextFormField(label: 'Contraseña', obscureText: true),
+          CustomTextFormField(
+            label: 'Correo',
+            onChanged: ref.read(loginFormProvider.notifier).onEmailChange,
+            keyboardType: TextInputType.emailAddress,
+            errorMessage: loginForm.email.errorMessage,
+          ),
+          CustomTextFormField(
+            label: 'Contraseña',
+            onChanged: ref.read(loginFormProvider.notifier).onPasswordChange,
+            errorMessage: loginForm.password.errorMessage,
+            obscureText: true,
+          ),
           SizedBox(height: 100),
           SizedBox(
             width: double.infinity,
             height: 60,
-            child: CustomFilledButton(text: 'Ingresar', buttonColor: Colors.black, onPressed: () {}),
+            child: CustomFilledButton(
+              text: 'Ingresar',
+              buttonColor: Colors.black,
+              onPressed: () => ref.read(loginFormProvider.notifier).onFormSubmit(),
+            ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
