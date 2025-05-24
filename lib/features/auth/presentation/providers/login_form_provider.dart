@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:teslo_shop/features/auth/presentation/providers/providers.dart';
 import 'package:teslo_shop/features/shared/infrastructure/inputs/inputs.dart';
 
@@ -35,9 +33,11 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
 
     if (!state.isValid) return;
 
-    log(state.toString());
+    state = state.copyWith(isPosting: true);
 
     await loginUserCallback(state.email.value, state.password.value);
+
+    state = state.copyWith(isPosting: false);
   }
 
   _touchEveryField() {
