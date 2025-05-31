@@ -18,6 +18,7 @@ final goRouterProvider = Provider(
         GoRoute(path: '/splash', builder: (context, state) => const CheckAuthScreen()),
         GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
         GoRoute(path: '/register', builder: (context, state) => const RegisterScreen()),
+        GoRoute(path: '/product/:id', builder: (context, state) => ProductScreen(productId: state.pathParameters['id'] ?? '')),
       ],
       redirect: (context, state) {
         final isGoingTo = state.fullPath;

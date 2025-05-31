@@ -1,3 +1,1 @@
-
-
-export 'presentation/screens/screens.dart';
+export 'package:teslo_shop/features/products/presentation/presentation.dart';
