@@ -20,26 +20,29 @@ class ProductScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final productState = ref.watch(productProvider(productId));
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Editar Producto'),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.camera_alt_outlined))],
-      ),
-      body: productState.isLoading ? FullScreenLoader() : _ProductView(product: productState.product!),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          try {
-            final res = await ref.read(productFormProvider(productState.product!).notifier).onFormSubmit();
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Editar Producto'),
+          actions: [IconButton(onPressed: () {}, icon: Icon(Icons.camera_alt_outlined))],
+        ),
+        body: productState.isLoading ? FullScreenLoader() : _ProductView(product: productState.product!),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            try {
+              final res = await ref.read(productFormProvider(productState.product!).notifier).onFormSubmit();
 
-            if (context.mounted) {
-              showSnackbar(
-                  context, res ? 'Producto actualizado correctamente.' : 'Ha ocurrido un error al actualizar el producto.');
+              if (context.mounted) {
+                showSnackbar(
+                    context, res ? 'Producto actualizado correctamente.' : 'Ha ocurrido un error al actualizar el producto.');
+              }
+            } catch (e) {
+              if (context.mounted) showSnackbar(context, e.toString());
             }
-          } catch (e) {
-            if (context.mounted) showSnackbar(context, e.toString());
-          }
-        },
-        child: Icon(Icons.save_as_outlined),
+          },
+          child: Icon(Icons.save_as_outlined),
+        ),
       ),
     );
   }
@@ -163,6 +166,7 @@ class _SizeSelector extends StatelessWidget {
       }).toList(),
       selected: Set.from(selectedSizes),
       onSelectionChanged: (newSelection) {
+        FocusScope.of(context).unfocus();
         onSizesChanged(List.from(newSelection));
       },
       multiSelectionEnabled: true,
@@ -190,14 +194,15 @@ class _GenderSelector extends StatelessWidget {
         multiSelectionEnabled: false,
         showSelectedIcon: false,
         style: const ButtonStyle(visualDensity: VisualDensity.compact),
-        segments: genders.map((size) {
-          return ButtonSegment(
-              icon: Icon(genderIcons[genders.indexOf(size)]),
-              value: size,
-              label: Text(size, style: const TextStyle(fontSize: 12)));
-        }).toList(),
+        segments: genders
+            .map((size) => ButtonSegment(
+                icon: Icon(genderIcons[genders.indexOf(size)]),
+                value: size,
+                label: Text(size, style: const TextStyle(fontSize: 12))))
+            .toList(),
         selected: {selectedGender},
         onSelectionChanged: (newSelection) {
+          FocusScope.of(context).unfocus();
           onGenderChanged(newSelection.first);
         },
       ),
