@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:teslo_shop/config/config.dart';
 
 import 'package:teslo_shop/features/products/domain/domain.dart';
@@ -23,6 +21,7 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       final String url = (productId == null) ? '/products' : '/products/$productId';
 
       productLike.remove('id');
+      productLike['images'] = await _uploadPhotos(productLike['images']);
 
       final response = await dio.request(url, data: productLike, options: Options(method: method));
 
@@ -30,7 +29,6 @@ class ProductsDatasourceImpl extends ProductsDatasource {
 
       return product;
     } on DioException catch (e) {
-      log("ERROR: $e");
       if (e.response?.statusCode == 404) throw ProductNotFound();
       throw Exception();
     } catch (e) {
@@ -68,5 +66,29 @@ class ProductsDatasourceImpl extends ProductsDatasource {
     } catch (e) {
       throw Exception();
     }
+  }
+
+  Future<String> _uploadFile(String path) async {
+    try {
+      final fileName = path.split("/").last;
+
+      final FormData data = FormData.fromMap({'file': MultipartFile.fromFileSync(path, filename: fileName)});
+
+      final response = await dio.post('/files/product', data: data);
+
+      return response.data['image'];
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
+  Future<List<String>> _uploadPhotos(List<String> photos) async {
+    final photosToUpload = photos.where((element) => element.contains("example")).toList();
+    final photosToIgnore = photos.where((element) => !element.contains("example")).toList();
+
+    final List<Future<String>> uploadJob = photosToUpload.map(_uploadFile).toList();
+    final newImages = await Future.wait(uploadJob);
+
+    return [...photosToIgnore.map((image) => image.replaceAll("/", '')), ...newImages];
   }
 }

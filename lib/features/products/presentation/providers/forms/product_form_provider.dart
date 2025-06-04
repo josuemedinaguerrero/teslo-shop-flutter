@@ -11,7 +11,6 @@ import 'package:formz/formz.dart';
 final productFormProvider = StateNotifierProvider.autoDispose.family<ProductFormNotifier, ProductFormState, Product>(
   (ref, arg) {
     final createUpdateCallback = ref.watch(productsProvider.notifier).createOrUpdateProduct;
-    // final createUpdateCallback = ref.watch(productsRepositoryProvider).createUpdateProduct;
     return ProductFormNotifier(product: arg, onSubmitCallback: createUpdateCallback);
   },
 );
@@ -49,11 +48,10 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
         'sizes': state.sizes,
         'gender': state.gender,
         'tags': state.tags.split(','),
-        'images':
-            state.images.map((image) => image.replaceAll('${Environment.apiUrl}/files/product', '').replaceAll("/", '')).toList(),
+        'images': state.images.map((image) => image.replaceAll('${Environment.apiUrl}/files/product', '')).toList(),
       };
 
-      log('PRODUCT: $productLike');
+      log('NEW PRODUCT: $productLike');
 
       return await onSubmitCallback(productLike);
     } catch (e) {
