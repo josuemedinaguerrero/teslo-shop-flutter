@@ -5,7 +5,7 @@ class ProductMapper {
   static Product productResponseToEntity(ProductResponse productResponse) => Product(
         id: productResponse.id,
         title: productResponse.title,
-        price: productResponse.price,
+        price: productResponse.price.toDouble(),
         description: productResponse.description,
         slug: productResponse.slug,
         stock: productResponse.stock,
